@@ -1,10 +1,12 @@
 // The Long Game: Complete Scenario Deck
 
+
 const players = ["Daniel", "Claudia"];
 let currentPlayerIndex = 0;
 let current = 0;
 let chaosScore = 0;
 let selectedScenarios = [];
+let currentLevel = 1;
 const usedScenarioIndexes = new Set();
 
 // Level 1: Disaster & Danger
@@ -308,6 +310,23 @@ const level5Cards = [
   }
 ];
 
+const levelMap = {
+  1: level1Cards,
+  2: level2Cards,
+  3: level3Cards,
+  4: level4Cards,
+  5: level5Cards
+};
+
+let levelIndexTracker = {
+  1: new Set(),
+  2: new Set(),
+  3: new Set(),
+  4: new Set(),
+  5: new Set()
+};
+
+
 // Master Scenario Deck
 const allScenarios = [
   ...level1Cards,
@@ -320,22 +339,32 @@ const allScenarios = [
 function nextScenario() {
   document.getElementById("result").innerText = "";
 
-  if (usedScenarioIndexes.size === allScenarios.length) {
-    document.getElementById("scenarioBox").innerText = "Game over! 🎉";
-    document.getElementById("choicesBox").innerHTML = "";
-    return;
+  const levelCards = levelMap[currentLevel];
+  const usedIndexes = levelIndexTracker[currentLevel];
+
+  if (usedIndexes.size === levelCards.length) {
+    if (currentLevel < 5) {
+      currentLevel++;
+      nextScenario(); // Automatically move to next level
+      return;
+    } else {
+      document.getElementById("scenarioBox").innerText = "Game over! 🎉";
+      document.getElementById("choicesBox").innerHTML = "";
+      document.getElementById("playerTurn").innerText = "";
+      return;
+    }
   }
 
   let index;
   do {
-    index = Math.floor(Math.random() * allScenarios.length);
-  } while (usedScenarioIndexes.has(index));
+    index = Math.floor(Math.random() * levelCards.length);
+  } while (usedIndexes.has(index));
 
-  usedScenarioIndexes.add(index);
+  usedIndexes.add(index);
   current = index;
 
-  const scenario = allScenarios[index];
-  document.getElementById("scenarioBox").innerText = scenario.text;
+  const scenario = levelCards[index];
+  document.getElementById("scenarioBox").innerText = `LEVEL ${currentLevel}️⃣\n\n${scenario.text}`;
 
   const player = players[currentPlayerIndex % players.length];
   document.getElementById("playerTurn").innerText = `${player}'s Turn`;
@@ -350,8 +379,9 @@ function nextScenario() {
   });
 }
 
+
 function selectChoice(i) {
-  const scenario = allScenarios[current];
+  const scenario = levelMap[currentLevel][current];
   const choice = scenario.choices[i];
 
   document.getElementById("result").innerText = choice.result;
@@ -360,3 +390,4 @@ function selectChoice(i) {
 
   currentPlayerIndex++;
 }
+
