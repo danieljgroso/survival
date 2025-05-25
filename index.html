@@ -98,8 +98,48 @@
     let chaosScore = 0;
     let selectedScenarios = [];
 
-    const allScenarios = [
-      // This will be filled with your 15+ total scenarios (already defined above)
+    const allScenarios = scenarios.concat([
+      {
+        text: "🧊 The fridge breaks and your ice cream is melting. What’s your move?",
+        choices: [
+          { text: "Eat everything immediately.", result: "Glorious chaos. You regret nothing. 🍦🔥", chaos: 2 },
+          { text: "Call the landlord mid-scoop.", result: "They put you on hold. Ice cream soup it is. 📞🍨", chaos: 1 },
+          { text: "Use the ice cream to barter with neighbors.", result: "Now you’re local royalty. 🍦👑", chaos: -1 },
+          { text: "Make Claudia try every flavor blindfolded.", result: "She loves it... until durian hits. 😬", chaos: 1 },
+          { text: "Freeze it outside — it’s Miami, what could go wrong?", result: "Everything melted. Nice try. 🌴😅", chaos: 2 }
+        ]
+      },
+      {
+        text: "📱 Claudia’s phone is dead and you’re both lost in a theme park.",
+        choices: [
+          { text: "Pretend you're on *Survivor*.", result: "Daniel eats a churro off the ground. You are not on *Survivor*. 🌽", chaos: 2 },
+          { text: "Ask a mascot for directions.", result: "They hug you and walk away. Not helpful. 🐭❓", chaos: 1 },
+          { text: "Climb a ride for better signal.", result: "You get signal — and banned. 📶🚫", chaos: 3 },
+          { text: "Follow the smell of funnel cake.", result: "Success. Delicious success. 🎡🍰", chaos: -1 },
+          { text: "Claudia draws a map in the dirt.", result: "It actually works. You’re impressed. 🗺️💖", chaos: -2 }
+        ]
+      },
+      {
+        text: "🎄 You’re decorating for the holidays and disagree on everything.",
+        choices: [
+          { text: "Settle it with a snowball fight (indoors).", result: "Pillows everywhere. Chaos ensues. ❄️🛋️", chaos: 2 },
+          { text: "Let Claudia take the lead... this time.", result: "Themed perfection. You’ve been outdecorated. 🎀", chaos: -1 },
+          { text: "Use both themes. It’s eclectic now.", result: "It’s weird, but festive. 🎉🕯️", chaos: 0 },
+          { text: "Put up one decoration per room. Spread the chaos.", result: "Santa in the bathroom? Why not. 🎅🚽", chaos: 1 },
+          { text: "Replace all lights with motion sensors.", result: "Blinking disaster. Claudia trips. 🎇😵", chaos: 3 }
+        ]
+      },
+      {
+        text: "🐠 You win a free pet fish and can’t agree on the name.",
+        choices: [
+          { text: "Name it after your childhood goldfish.", result: "Claudia is unimpressed. RIP Goldy II. 🐟", chaos: 1 },
+          { text: "Let Claudia name it 'Sushi' ironically.", result: "You’re concerned. Claudia’s laughing. 🍣", chaos: 2 },
+          { text: "Flip a coin.", result: "It lands on its side. Now you’re cursed. 🪙🧿", chaos: 1 },
+          { text: "Agree to each call it something different.", result: "Dual identities. That fish is confused. 🤯", chaos: 0 },
+          { text: "Give it a full legal name: Sir Finnegan Bubblesworth III.", result: "Elegant. Noble. Slightly extra. 🎩🐠", chaos: -1 }
+        ]
+      }
+    ])
     ];
 
     function getRandomScenarios(pool, count) {
@@ -162,8 +202,16 @@
       document.getElementById('turn').textContent = '';
       document.getElementById('choices').innerHTML = '';
       let verdict = "";
-      if (chaosScore <= 2) {
-        verdict = "✨ Chill couple energy. You’d survive IKEA and zombies.";
+      if (chaosScore <= -3) {
+        verdict = "🧊 Ice cold. Calm under pressure. Unshakable energy.";
+      } else if (chaosScore <= 0) {
+        verdict = "🍃 You kept it chill. Peaceful vibes all around.";
+      } else if (chaosScore <= 3) {
+        verdict = "🎢 Some bumps, but you’re vibing through the mayhem.";
+      } else if (chaosScore <= 6) {
+        verdict = "🔥 Things got spicy! You brought the drama.";
+      } else {
+        verdict = "💥 Pure chaos. Iconic. Utterly unhinged (in the best way).";
       } else if (chaosScore <= 6) {
         verdict = "🎢 Some bumps, but you’re vibing through the mayhem.";
       } else if (chaosScore <= 10) {
