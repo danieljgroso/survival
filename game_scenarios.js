@@ -187,7 +187,7 @@ const level3Cards = [
       { text: "Insist it's a normal thing everyone does.", result: "It is not. But you’re committed. 🤷‍♀️", chaos: 0 }
     ]
   },
-  {
+{
     text: "💌 One of you finds an old cringey message from when you first started flirting.",
     choices: [
       { text: "Read it dramatically in a fake accent.", result: "Oscar-worthy. Deeply cursed. 🎭📱", chaos: 1 },
@@ -196,7 +196,9 @@ const level3Cards = [
       { text: "Delete it quickly and deny everything.", result: "They screenshot it already. 🫣", chaos: 2 },
       { text: "Save it in a folder called 'evidence.'", result: "Mildly terrifying. Also sweet. 🗂️💘", chaos: 0 }
     ]
-  },
+  } // ✅ Remove comma here
+];   // ✅ Close the array
+
   
 // Level 4: Domestic Chaos
 const level4Cards = [
