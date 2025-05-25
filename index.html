@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Would You Survive?</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: #fff8f0;
+      color: #333;
+      text-align: center;
+      padding: 40px;
+      overflow-x: hidden;
+    }
+    .hidden { display: none; }
+    .scenario {
+      font-size: 24px;
+      margin: 30px auto;
+      max-width: 700px;
+      padding: 20px;
+      border-radius: 12px;
+      background-color: #fff;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      animation: fadeIn 1s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .choices button, .start-btn, .replay-btn {
+      margin: 10px;
+      padding: 15px 25px;
+      font-size: 18px;
+      border: 2px solid #444;
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .choices button:hover, .start-btn:hover, .replay-btn:hover {
+      background-color: #ffe0e9;
+      transform: scale(1.05);
+    }
+    .result {
+      margin-top: 30px;
+      font-style: italic;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+    .score {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 20px;
+    }
+    .turn {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #555;
+    }
+    .confetti {
+      font-size: 40px;
+      animation: pop 1s ease-in-out infinite;
+    }
+    @keyframes pop {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+    }
+  </style>
+  <audio id="bg-music" loop>
+    <source src="https://cdn.pixabay.com/audio/2022/10/25/audio_91c0c22791.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="choice-sound">
+    <source src="https://cdn.pixabay.com/audio/2022/03/01/audio_7f30ebcdb9.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="end-sound">
+    <source src="https://cdn.pixabay.com/audio/2022/10/20/audio_4e716dcf3b.mp3" type="audio/mpeg">
+  </audio>
+</head>
+<body>
+  <h1>💀 Would You Survive? 💘</h1>
+  <div id="start-screen">
+    <button class="start-btn" onclick="startGame()">🎮 Start Game</button>
+  </div>
+  <div class="turn hidden" id="turn"></div>
+  <div class="scenario hidden" id="scenario"></div>
+  <div class="choices hidden" id="choices"></div>
+  <div class="result hidden" id="result"></div>
+  <div class="score hidden" id="score">🧠 Chaos Score: 0</div>
+  <div id="replay" class="hidden">
+    <div class="confetti">🎉</div>
+    <button class="replay-btn" onclick="startGame()">🔁 Play Again</button>
+  </div>
+
+  <script>
+    const players = ["Daniel", "Claudia"];
+    let currentPlayerIndex = 0;
+    let current = 0;
+    let chaosScore = 0;
+    let selectedScenarios = [];
+
+    const allScenarios = [
+      // This will be filled with your 15+ total scenarios (already defined above)
+    ];
+
+    function getRandomScenarios(pool, count) {
+      const shuffled = [...pool].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count);
+    }
+
+    function startGame() {
+      document.getElementById('bg-music').play();
+      document.getElementById('start-screen').classList.add('hidden');
+      document.getElementById('turn').classList.remove('hidden');
+      document.getElementById('scenario').classList.remove('hidden');
+      document.getElementById('choices').classList.remove('hidden');
+      document.getElementById('result').classList.remove('hidden');
+      document.getElementById('score').classList.remove('hidden');
+      document.getElementById('replay').classList.add('hidden');
+
+      chaosScore = 0;
+      current = 0;
+      currentPlayerIndex = 0;
+      selectedScenarios = getRandomScenarios(scenarios, 5);
+      renderScenario();
+    }
+
+    function renderScenario() {
+      const s = selectedScenarios[current];
+      document.getElementById('scenario').textContent = s.text;
+      document.getElementById('turn').textContent = `🎲 It's ${players[currentPlayerIndex]}'s turn!`;
+      const choicesDiv = document.getElementById('choices');
+      const resultDiv = document.getElementById('result');
+      resultDiv.textContent = '';
+      choicesDiv.innerHTML = '';
+
+      s.choices.forEach(choice => {
+        const btn = document.createElement('button');
+        btn.textContent = choice.text;
+        btn.onclick = () => {
+          document.getElementById('choice-sound').play();
+          resultDiv.textContent = choice.result;
+          chaosScore += choice.chaos;
+          document.getElementById('score').textContent = `🧠 Chaos Score: ${chaosScore}`;
+
+          setTimeout(() => {
+            current++;
+            currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+            if (current < selectedScenarios.length) {
+              renderScenario();
+            } else {
+              endGame();
+            }
+          }, 1500);
+        };
+        choicesDiv.appendChild(btn);
+      });
+    }
+
+    function endGame() {
+      document.getElementById('end-sound').play();
+      document.getElementById('scenario').textContent = "🎉 Game Over!";
+      document.getElementById('turn').textContent = '';
+      document.getElementById('choices').innerHTML = '';
+      let verdict = "";
+      if (chaosScore <= 2) {
+        verdict = "✨ Chill couple energy. You’d survive IKEA and zombies.";
+      } else if (chaosScore <= 6) {
+        verdict = "🎢 Some bumps, but you’re vibing through the mayhem.";
+      } else if (chaosScore <= 10) {
+        verdict = "🔥 Mild-to-medium chaos — spicy, but survivable!";
+      } else {
+        verdict = "💥 You two are a beautiful disaster. We love to see it.";
+      }
+      document.getElementById('result').innerHTML = `<strong>Your final chaos score is: ${chaosScore}</strong><br><em>${verdict}</em>`;
+      document.getElementById('replay').classList.remove('hidden');
+    }
+
+    // Placeholder: replace with full scenario pool in real use
+    const scenarios = [
+      {
+        text: "🧟 You wake up to find zombies outside. Your girlfriend is brushing her teeth. What do you do?",
+        choices: [
+          { text: "Grab her hand and run. No time to rinse.", result: "You both survive but she resents the minty injustice. 💔", chaos: 2 },
+          { text: "Let her rinse while you brew coffee real quick.", result: "You nearly die, but you're caffeinated. ☕ + 😘", chaos: 3 },
+          { text: "Hide in the laundry basket together.", result: "You both smell like lavender. Zombies ignore you. +2 stealth. 🙈", chaos: -1 },
+          { text: "Ask the zombies if they've seen your neighbor Carl.", result: "They groan. You groan. It’s a bonding moment. 🧟‍♂️🧟‍♀️", chaos: 1 },
+          { text: "Turn on music and try to distract them with a dance party.", result: "Zombies start doing the Macarena. You escape mid-dance. 🕺🧟", chaos: 0 }
+        ]
+      },
+      {
+        text: "🛸 Aliens land and demand your best couple's TikTok dance. What now?",
+        choices: [
+          { text: "Nail the Cupid Shuffle with zero coordination.", result: "Aliens love it. Your rhythm? Not so much. 👽✨", chaos: 0 },
+          { text: "You panic and do The Worm alone.", result: "She laughs so hard she forgets the aliens. 💕", chaos: -1 },
+          { text: "You both freeze and awkwardly wave.", result: "Aliens assume you're diplomats. 🛸🌎", chaos: -2 },
+          { text: "Start flossing — she's mortified.", result: "She considers single status. Aliens vibe with you though. 🤖", chaos: 3 },
+          { text: "Claudia starts beatboxing while Daniel breakdances.", result: "Aliens declare you rulers of Earth. 🕶️🌍", chaos: 1 }
+        ]
+      },
+      {
+        text: "🔥 The kitchen is on fire. Who started it is unclear. What do you do?",
+        choices: [
+          { text: "Grab the fire extinguisher and pretend to be a hero.", result: "She claps. You flex. Fire’s out. 🧯💪", chaos: -2 },
+          { text: "Blame the toaster and order takeout.", result: "The house smolders, but at least you're fed. 🍕🔥", chaos: 2 },
+          { text: "Ask her to film you saving the day.", result: "She records your dramatic fail. Viral moment. 📱💥", chaos: 1 },
+          { text: "Both yell ‘Not it!’ and run out together.", result: "The bond is strong but the apartment is gone. 🏃‍♀️🏃‍♂️💨", chaos: 3 },
+          { text: "You grab marshmallows and roast them over the flames.", result: "Romantic or deranged? Jury’s out. 🔥🍡", chaos: 1 }
+        ]
+      },
+      {
+        text: "🐍 A snake has somehow gotten into the bathroom. What now?",
+        choices: [
+          { text: "Daniel bravely traps it with a laundry basket.", result: "Success! Claudia is impressed but also suspicious of how calm you were. 🧺🐍", chaos: -1 },
+          { text: "Claudia yells while Daniel yells louder.", result: "Snake leaves out of pity. You bond over mutual panic. 😂", chaos: 0 },
+          { text: "You both move out immediately.", result: "Expensive but effective. 🏚️➡️🏖️", chaos: 2 },
+          { text: "Attempt to befriend the snake.", result: "It hisses. You hiss. Respect is earned. 🐍💅", chaos: 1 },
+          { text: "Offer it snacks and a name.", result: "Welcome, Señor Wiggles. Claudia is suspicious but intrigued. 🐍🍪", chaos: 2 }
+        ]
+      },
+      {
+        text: "🎢 You're both stuck upside down on a rollercoaster. It's been 15 minutes.",
+        choices: [
+          { text: "Start playing 20 Questions to pass the time.", result: "You forget you're upside down. Relationship level up. 🎯", chaos: -2 },
+          { text: "Panic and demand snacks.", result: "Claudia laughs. You both get hangry. 🎢🍫", chaos: 1 },
+          { text: "Pretend you're in an action movie.", result: "You both overact so hard it gets posted online. 🎬", chaos: 0 },
+          { text: "Try to kiss while inverted.", result: "You bonk foreheads. It’s awkwardly romantic. 💋🤕", chaos: 1 },
+          { text: "Sing show tunes until help arrives.", result: "You're both stars. Or at least loud. 🎶🎢", chaos: 0 }
+        ]
+      },
+      {
+        text: "🧁 Claudia surprises Daniel with homemade cupcakes… but used salt instead of sugar.",
+        choices: [
+          { text: "Daniel pretends they’re delicious.", result: "True love is blind. And now salty. 🧂❤️", chaos: -1 },
+          { text: "Claudia eats one herself and screams.", result: "Laughter follows. Cupcakes go in the trash. 🗑️😂", chaos: 0 },
+          { text: "Daniel suggests turning them into soup.", result: "Strange, but kind of genius? 🍲", chaos: 2 },
+          { text: "Start a prank war.", result: "It escalates quickly. Chaos reigns. 🎯🍰🔥", chaos: 3 },
+          { text: "Use them as hockey pucks in the hallway.", result: "The game is chaos. Your bond is unbreakable. 🏒🧁", chaos: 1 }
+        ]
+      },
+      {
+        text: "🛍️ You and Claudia are trapped overnight in a department store. What do you do?",
+        choices: [
+          { text: "Fashion show with stolen mannequins.", result: "You both slay the runway. The security cameras have questions. 👗🎥", chaos: 1 },
+          { text: "Camp in the bedding aisle.", result: "Luxury sleep achieved. You're basically glamping. 🛏️✨", chaos: -1 },
+          { text: "Make a TikTok horror film.", result: "The jump scare was too real. Claudia screams for real. 😱📱", chaos: 2 },
+          { text: "Raid the snack aisle, no regrets.", result: "Instant picnic. Bonding over chips. 🥨💕", chaos: -1 },
+          { text: "Use walkie-talkies to pretend you're spies.", result: "You take it way too seriously. Claudia calls you 'Agent Cringe'. 🎧🕵️", chaos: 1 }
+        ]
+      },
+      {
+        text: "🌪️ A surprise hurricane hits Miami. You’re stuck at home together for 3 days.",
+        choices: [
+          { text: "Binge disaster movies. Laugh nervously.", result: "Art imitates life. Claudia hides during Twister. 🎬🌀", chaos: 0 },
+          { text: "Make hurricane-themed cocktails.", result: "Your mixology skills impress. Claudia gets tipsy. 🍹🌀", chaos: -1 },
+          { text: "Board up windows together heroically.", result: "You both feel powerful. Relationship leveled up. 💪💖", chaos: -2 },
+          { text: "Try to grill indoors. Bad idea.", result: "Fire alarm says no. You both get roasted. 🔥🚨", chaos: 3 },
+          { text: "Build a blanket fort and pretend you're pirates.", result: "Captain Claudia orders snacks. You obey. 🏴‍☠️🛋️", chaos: 0 }
+        ]
+      },
+      {
+        text: "🏝️ You win a surprise all-expenses-paid trip... but it's to a mysterious island.",
+        choices: [
+          { text: "Go anyway — adventure awaits!", result: "The monkeys steal your sunscreen. Still worth it. 🐒☀️", chaos: 1 },
+          { text: "Google reviews and reconsider.", result: "You find no info. Claudia gets suspicious. 🤔📱", chaos: 0 },
+          { text: "Ask if there's AC. That's the dealbreaker.", result: "You're both sweating and grumpy. Island chaos. 🌴🥵", chaos: 2 },
+          { text: "Bring matching Hawaiian shirts and commit.", result: "You look fabulous and get mistaken for influencers. 🌺📸", chaos: -1 },
+          { text: "Name it 'Claudieland' and declare yourselves rulers.", result: "The crabs disagree. 🦀👑", chaos: 2 }
+        ]
+      },
+      {
+        text: "🧛 A suspiciously pale new neighbor invites you to dinner... at midnight.",
+        choices: [
+          { text: "Go and bring garlic bread just in case.", result: "He's allergic. But now you're the weird ones. 🧄🍞", chaos: 0 },
+          { text: "Decline and install extra locks.", result: "Safe but paranoid. Claudia sleeps with a flashlight. 🔦🛏️", chaos: -1 },
+          { text: "Wear all black and pretend you're vampires too.", result: "Instant friendship. Weekly goth dinners commence. 🧛🖤", chaos: 1 },
+          { text: "Ask if there will be vegan options.", result: "He says yes. You’re intrigued and afraid. 🧛🥗", chaos: 2 },
+          { text: "Claudia livestreams the whole thing.", result: "You're viral. The vampire is not amused. 📱🧛😠", chaos: 3 }
+        ]
+      }
+    ];
+  </script>
+</body>
+</html>
