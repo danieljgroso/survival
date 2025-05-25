@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Claudia & Daniel vs. The Chaos of Life 💥💘</title>
-  <link rel="icon" href="❤️" />
+  <title>Claudia & Daniel Try to Survive Life</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -13,18 +12,6 @@
       padding: 40px;
       overflow-x: hidden;
     }
-
-    h1 {
-      font-size: 36px;
-      margin-bottom: 10px;
-    }
-
-    h2 {
-      font-size: 24px;
-      color: #555;
-      margin-top: 5px;
-    }
-
     .scenario {
       font-size: 22px;
       margin: 30px auto;
@@ -34,11 +21,6 @@
       background-color: #fff;
       box-shadow: 0 0 15px rgba(0,0,0,0.1);
     }
-
-    .choices {
-      margin-top: 20px;
-    }
-
     .choices button {
       margin: 10px;
       padding: 12px 24px;
@@ -49,50 +31,25 @@
       background-color: #f0f0f0;
       transition: background-color 0.3s;
     }
-
     .choices button:hover {
       background-color: #d1d1d1;
     }
-
     #result {
       font-size: 18px;
       margin-top: 20px;
       font-weight: bold;
     }
-
-    p {
-      margin-top: 30px;
-      font-size: 18px;
-    }
-
-    .next-btn {
-      margin-top: 30px;
-      padding: 14px 28px;
-      font-size: 18px;
-      border: none;
-      border-radius: 10px;
-      background-color: #ffe5ec;
-      color: #333;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .next-btn:hover {
-      background-color: #ffc9da;
-    }
   </style>
 </head>
 <body>
 
-  <h1>Claudia & Daniel vs. The Chaos of Life 💥💘</h1>
-  <h2 id="playerTurn">Click "Next" to begin!</h2>
-
-  <div class="scenario" id="scenarioBox">Ready to test your chaos?</div>
+  <h1>Claudia & Daniel Try to Survive Life 💘</h1>
+  <h2 id="playerTurn"></h2>
+  <div class="scenario" id="scenarioBox"></div>
   <div class="choices" id="choicesBox"></div>
   <div id="result"></div>
-
   <p>Chaos Score: <span id="chaosScore">0</span></p>
-  <button class="next-btn" onclick="nextScenario()">Next</button>
+  <button onclick="nextScenario()">Next</button>
 
   <script src="game_scenarios.js"></script>
 </body>
